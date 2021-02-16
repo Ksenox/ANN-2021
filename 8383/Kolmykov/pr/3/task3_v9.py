@@ -2,8 +2,7 @@ import numpy as np
 
 
 def f(matrix):
-    print(matrix)
-    result = np.zeros(matrix.shape[0])
+    result = np.zeros(matrix.shape[0], dtype='int')
     for i in range(len(result)):
         result[i] = getResForLine(matrix[i])
     return result
@@ -36,4 +35,7 @@ def getKeyByValue(dictionary, val):
 
 # print(f(np.array([[1, 2, 3], [4, 5, 5], [6, 6, 6], [7, 7, 8]])))
 matrix = np.genfromtxt('task3.csv', dtype='int', delimiter=';')
-print(f(matrix))
+res = f(matrix)
+print(res)
+file = open('res.txt', 'w')
+file.write(str(res))
