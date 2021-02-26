@@ -18,20 +18,30 @@ coded_test_x = test_x * 2
 
 main_input = Input(shape=(1,), name='main_input')
 
-encoding_layer = Dense(16, activation='relu')(main_input)
-encoding_output = Dense(1, activation='relu', name='encoding_output')(encoding_layer)
+# encoding_layer = Dense(16, activation='relu')(main_input)
+# encoding_layer = Dense(16, activation='relu')(encoding_layer)
+# encoding_layer = Dense(16, activation='relu')(encoding_layer)
+# encoding_output = Dense(1, name='encoding_output')(encoding_layer)
+encoding_output = Dense(1, name='encoding_output')(main_input)
 
-decoding_layer = Dense(16, activation='relu')(encoding_output)
-decoding_output = Dense(1, activation='relu', name='decoding_output')(decoding_layer)
+# decoding_layer = Dense(16, activation='relu')(encoding_output)
+# decoding_layer = Dense(16, activation='relu')(decoding_layer)
+# decoding_layer = Dense(16, activation='relu')(decoding_layer)
+# decoding_output = Dense(1, name='decoding_output')(decoding_layer)
+decoding_output = Dense(1, name='decoding_output')(encoding_output)
 
 regression_layer = Dense(64, activation='relu')(encoding_output)
-regression_layer = Dense(64, activation='relu')(regression_layer)
+# regression_layer = Dense(64, activation='relu')(regression_layer)
 regression_layer = Dense(64, activation='relu')(regression_layer)
 regression_output = Dense(1, name='regression_output')(regression_layer)
 
 model = Model(inputs=[main_input], outputs=[regression_output, encoding_output, decoding_output])
 model.compile(optimizer='rmsprop', loss='mse', metrics='mae')
-model.fit([train_x], [train_y, coded_train_x, train_x], epochs=150, batch_size=5, validation_split=0)
+model.fit([train_x], [train_y, coded_train_x, train_x], epochs=200, batch_size=5, validation_split=0)
+
+# model = Model(inputs=[main_input], outputs=[encoding_output])
+# model.compile(optimizer='rmsprop', loss='mse', metrics='mae')
+# model.fit([train_x], [coded_train_x], epochs=150, batch_size=5, validation_split=0)
 
 test = np.array([[3], [4], [5], [6], [7], [8], [9], [10]])
 
