@@ -26,6 +26,56 @@ data = np.concatenate((training_data, testing_data), axis=0)
 targets = np.concatenate((training_targets, testing_targets), axis=0)
 
 
+
+def input_user_comment():
+    
+    def clean_str(str):
+        str = "".join(c for c in str if c.isalpha() or c.isspace()).expandtabs(tabsize=1).strip().lower()
+        str = ' '.join(str.split())
+        return str
+    
+    print('Write your comment: ')
+    result_str = ''
+    while True:
+        str = input()
+        if str:
+            result_str += str + " "
+        else:
+            break
+
+    res_vect = clean_str(result_str).split(' ')
+    return res_vect
+    
+
+def vectorize_user_comment(vector_len=10000, need_decoded=False):
+
+    def words2index(words, words_index, vector_len=10000):
+        result = []
+        for elem in words:
+            ind = words_index.get(elem)
+            if ind is not None and ind < vector_len:
+                result.append(ind+3)
+        return result
+        
+        
+    words_index = imdb.get_word_index()
+    usr_comment = input_user_comment()
+    
+    index_vec = words2index(usr_comment, words_index, vector_len) #print(index_vec)
+    
+    if need_decoded:
+        reverse_index = dict([(value, key) for (key, value) in words_index.items()]) 
+        decoded = " ".join( [reverse_index.get(i - 3, "#") for i in index_vec] )
+        print(decoded)
+    
+    
+    res = vectorize(np.asarray([index_vec]))
+    
+    return res
+    
+
+
+
 # графики потерь и точности при обучении и тестирования
 def plot_model_loss_and_accuracy(history, figsize_=(10,5)):
     plt.figure(figsize=figsize_)
@@ -113,11 +163,23 @@ history = model.fit(
     verbose=2
 )
 
-
-plot_model_loss_and_accuracy(history)
-
+if epochs_num > 4:
+    plot_model_loss_and_accuracy(history)
 
 test_score = model.evaluate(test_x,test_y)
 print(test_score)
 #plot_model(model, to_file='model.png', show_shapes=True)
 
+vec = vectorize_user_comment(need_decoded=False)
+#print(vec)
+
+
+res = model.predict(vec)
+
+print(res)
+
+if res[0] > 0.5:
+    print('It is more better, than bad))')
+else:
+    print('It can be bad comment((')
+    
