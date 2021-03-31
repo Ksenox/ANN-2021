@@ -40,16 +40,16 @@ opts = {
     'RMSProp,lr=.001': optimizers.RMSprop(learning_rate=0.001),
     'RMSProp,lr=.01': optimizers.RMSprop(learning_rate=0.01),
     'RMSProp,lr=.1': optimizers.RMSprop(learning_rate=0.1),
-    'Adam,lr=.001,e=1e-7': optimizers.RMSprop(learning_rate=0.001),
+    'Adam,lr=.001,e=1e-7': optimizers.Adam(learning_rate=0.001),
     'Adam,lr=.01,e=1e-7': optimizers.Adam(learning_rate=0.01),
     'Adam,lr=.1,e=1e-7': optimizers.Adam(learning_rate=0.1),
     'Adam,lr=.001,e=1e-4': optimizers.Adam(learning_rate=0.001, epsilon=0.0001),
     'Adamax,lr=.001': optimizers.Adamax(learning_rate=0.001),
     'Adamax,lr=.01': optimizers.Adamax(learning_rate=0.01),
     'Adamax,lr=.1': optimizers.Adamax(learning_rate=0.1),
-    'SGD,lr=.001': optimizers.Adamax(learning_rate=0.001),
-    'SGD,lr=.01': optimizers.Adamax(learning_rate=0.01),
-    'SGD,lr=.1': optimizers.Adamax(learning_rate=0.1)
+    'SGD,lr=.001': optimizers.SGD(learning_rate=0.001),
+    'SGD,lr=.01': optimizers.SGD(learning_rate=0.01),
+    'SGD,lr=.1': optimizers.SGD(learning_rate=0.1)
 }
 
 
