@@ -5,18 +5,20 @@ from keras.layers import Input, Convolution2D, MaxPooling2D, Dense, Dropout, Fla
 from keras.models import Model
 from keras.callbacks import Callback
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def draw_hist(accuracy, val_accuracy, number):
     epochs = range(1, len(accuracy) + 1)
     plt.clf()
-    plt.plot(epochs, accuracy, 'bo', label='Training acc')
-    plt.plot(epochs, val_accuracy, 'b', label='Validation acc')
-    plt.title('Training and validation accuracy')
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
-    plt.legend()
+    data = {'accurately': accuracy,
+            'not accurately': [(1 - acc) for acc in accuracy]}
+    df = pd.DataFrame(data)
+    df.plot(kind='bar', stacked=True)
     plt.savefig("hist_" + str(number) + ".png")
+    plt.title("Нормализованная гистограмма точности")
+    plt.xlabel("Эпохи")
+    plt.ylabel("Доля")
     plt.show()
 
 
