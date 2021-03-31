@@ -16,8 +16,9 @@ def draw_hist(accuracy, val_accuracy, number):
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.show()
     plt.savefig("hist_" + str(number) + ".png")
+    plt.show()
+
 
 def shuffle_data(data, label):
     tmp_data = []
