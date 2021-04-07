@@ -172,7 +172,7 @@ Epoch 100/100
 
 Тест регрессии приведен в файле `regression.csv`
 
-![decoded.csv](images/decodercsv.png)
+![decoded.csv](images/regressioncsv.png)
 
 MAE модели было относительно высоким, что сделало свой вклад.
 Абсолютная погрешность предсказаний порядка 0.8.
