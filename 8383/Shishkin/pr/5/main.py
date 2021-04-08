@@ -16,9 +16,13 @@ test_Y = np.reshape(test_data[:, 6], (len(test_data), 1))
 n_inputs = 6
 # define encoder
 visible = Input(shape=(n_inputs,))
-e = Dense(n_inputs, activation='relu', name='encoder')(visible)
+e_l1 = Dense(32, activation='relu')(visible)
+e_l2 = Dense(16, activation='relu')(e_l1)
+e = Dense(4, name='encoder')(e_l2)
 # define decoder
-d = Dense(n_inputs, name='decoder')(e)
+d_l1 = Dense(16, activation='relu', name='d_l1')(e)
+d_l2 = Dense(32, activation='relu', name='d_l2')(d_l1)
+d = Dense(n_inputs, name='decoder')(d_l2)
 # output layer
 l1 = Dense(64, activation='relu')(e)
 l2 = Dense(32, activation='relu')(l1)
@@ -31,7 +35,11 @@ model.compile(optimizer='adam', loss='mse', metrics='mae')
 model.fit(train_X, [train_Y, train_X], epochs=250, batch_size=5)
 
 e_model = Model(inputs=visible, outputs=e)
-d_model = Model(inputs=visible, outputs=d)
+d_input = Input(shape=(4,))  # encoder output = 4
+d_model_l1 = model.get_layer('d_l1')(d_input)
+d_model_l2 = model.get_layer('d_l2')(d_model_l1)
+d_model_output = model.get_layer('decoder')(d_model_l2)
+d_model = Model(inputs=d_input, outputs=d_model_output)
 reg_model = Model(inputs=visible, outputs=output)
 
 np.savetxt('encoded_model_prediction', e_model.predict(test_X), delimiter='\t')
