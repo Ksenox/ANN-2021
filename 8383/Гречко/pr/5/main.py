@@ -11,10 +11,12 @@ data += e
 data = np.transpose(data)
 target = np.array(np.cos(2*X) + e)
 train_size = 500
+
 train_data = data[:train_size, :]
 test_data = data[train_size:, :]
 train_labels = target[:train_size]
 test_labels = target[train_size:]
+
 np.savetxt("trainData.csv", train_data, delimiter=';')
 np.savetxt("testData.csv", test_data, delimiter=';')
 np.savetxt("trainLabels.csv", train_labels, delimiter=';')
@@ -44,8 +46,8 @@ regression = Dense(1, name='p_out')(regression)
 
 model = Model(main_input, outputs=[decoded, regression])
 model.compile(optimizer='adam', loss='mse', loss_weights=[0.8, 0.5])
-model.fit(train_data, [train_labels, train_data], epochs=50, batch_size=50, validation_split=0.1)
-model.evaluate(test_data, [test_labels, test_data])
+model.fit(train_data, [train_data, train_labels], epochs=50, batch_size=50, validation_split=0.1)
+model.evaluate(test_data, [test_data, test_labels])
 
 encodingModel = Model(main_input, encoded)
 regressionModel = Model(main_input, regression)
