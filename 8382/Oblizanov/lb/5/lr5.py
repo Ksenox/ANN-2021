@@ -38,7 +38,7 @@ class CNN:
     def build_model(self, kernel_size=3, dropout=True):
         inp = Input(shape=self.input_shape)
         conv_1 = Convolution2D(self.conv_depth_1, (kernel_size, kernel_size),
-                               padding='same', activation='relu')(inp)
+                               padding='same', strides=(1, 1), activation='relu')(inp)
         conv_2 = Convolution2D(self.conv_depth_1, (kernel_size, kernel_size),
                                padding='same', activation='relu')(conv_1)
         pool_1 = MaxPooling2D(pool_size=self.pool_size)(conv_2)
@@ -47,9 +47,9 @@ class CNN:
         else:
             drop_1 = pool_1
         conv_3 = Convolution2D(self.conv_depth_2, (kernel_size, kernel_size),
-                               padding='same', activation='relu')(drop_1)
+                               padding='same', strides=(1, 1), activation='relu')(drop_1)
         conv_4 = Convolution2D(self.conv_depth_2, (kernel_size, kernel_size),
-                               padding='same', activation='relu')(conv_3)
+                               padding='same', strides=(1, 1), activation='relu')(conv_3)
         pool_2 = MaxPooling2D(pool_size=self.pool_size)(conv_4)
         if dropout:
             drop_2 = Dropout(self.drop_prob_1)(pool_2)
@@ -81,8 +81,8 @@ class CNN:
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Test'])
         plt.show()
-        plt.plot(x, history.history['acc'])
-        plt.plot(x, history.history['val_acc'])
+        plt.plot(x, history.history['accuracy'])
+        plt.plot(x, history.history['val_accuracy'])
         plt.title('Model accuracy with kernel size = ' + str(kernel_size) + dropout)
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
