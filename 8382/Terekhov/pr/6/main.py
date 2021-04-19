@@ -4,9 +4,9 @@ import pandas as pd
 import seaborn as sns
 from keras.layers import Flatten, Dense, Input, Convolution2D, MaxPooling2D, Dropout
 from keras.models import Model
+from keras.utils import plot_model
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from keras.utils import plot_model
 
 from var4 import gen_data
 
@@ -16,6 +16,7 @@ def plot(data: pd.DataFrame, label: str):
     axis.set(ylabel=label, xlabel='epochs', title=label)
     axis.grid(True, linestyle="--")
     plt.show()
+
 
 if __name__ == '__main__':
     X, y = gen_data()
@@ -55,4 +56,3 @@ if __name__ == '__main__':
     history = pd.DataFrame(H.history)
     plot(history[['loss', 'val_loss']], "Loss")
     plot(history[['accuracy', 'val_accuracy']], "Accuracy")
-
