@@ -101,13 +101,15 @@ def encode_labels(fn):
 ```python
 layers = [
     Input(shape=(image_side, image_side, 1)),
-    Convolution2D(filters=32, kernel_size=(3, 3), padding="same", activation="relu"),
-    MaxPooling2D(pool_size=(2, 2), padding="same"),
-    Convolution2D(filters=64, kernel_size=(3, 3), padding="same", activation="relu"),
-    MaxPooling2D(pool_size=(2, 2), padding="same"),
+    Convolution2D(filters=32, kernel_size=(7, 7), padding="same", activation="relu"),
+    MaxPooling2D(pool_size=(5, 5), padding="same"),
+    Convolution2D(filters=64, kernel_size=(7, 7), padding="same", activation="relu"),
+    MaxPooling2D(pool_size=(5, 5), padding="same"),
     Flatten(),
-    Dropout(0.2),
     Dense(512, activation="relu"),
+    Dropout(0.25),
+    Dense(256, activation="relu"),
+    Dropout(0.15),
     Dense(3, activation="softmax")
 ]
 ```
