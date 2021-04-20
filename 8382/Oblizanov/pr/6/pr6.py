@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from var1 import gen_data
 
-data, labels = gen_data()
+data, labels = gen_data(800)
 size = len(labels)
 test_split = size // 5
 
@@ -37,7 +37,7 @@ model.add(Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 H = model.fit(train_data, train_labels, epochs=12, batch_size=16,
-              validation_data=(test_data, test_labels))
+              validation_split = 0.2)
 model.evaluate(test_data, test_labels)
 
 loss = H.history['loss']
