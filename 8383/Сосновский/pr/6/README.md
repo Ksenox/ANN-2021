@@ -89,6 +89,7 @@ Epoch 20/20
 ```
 
 Полученные графики ошибок и точности:
+
 ![Image alt](https://i.ibb.co/NYsKb3s/image.png)
 
 ![Image alt](https://i.ibb.co/2sRG92z/image.png)
