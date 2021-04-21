@@ -29,7 +29,9 @@ model.add(Dense(dense_size_2, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
 ```
 В качестве функции потерь была выбрана функция бинарной кроссэнтропии
+
 В качестве оптимизатора был взят оптимизатор Adam
+
 Были взяты следующие численные параметры обучения:
 ```python 
 batch_size = 16
@@ -41,7 +43,7 @@ loss: 0.1459
 accuracy: 0.9720
 ```
 
-Прцоесс обучения по всем эпохам: 
+Процесс обучения по всем эпохам: 
 ```python
 Epoch 1/20
 141/141 [==============================] - 8s 54ms/step - loss: 0.8087 - accuracy: 0.5970 - val_loss: 0.2170 - val_accuracy: 0.9253
