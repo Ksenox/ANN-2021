@@ -74,6 +74,7 @@ def create_model():
     model = Sequential()
     model.add(layers.Dense(50, activation="sigmoid", input_shape=(20000,)))
     model.add(layers.Dense(50, activation="sigmoid"))
+    model.add(layers.Dropout(0.4, noise_shape=None, seed=None))
     model.add(layers.Dense(75, activation="sigmoid"))
     model.add(layers.Dense(1, activation="sigmoid"))
 
