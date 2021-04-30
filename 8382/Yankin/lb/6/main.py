@@ -58,10 +58,11 @@ while True:
     coded = [1]
     for word in text:
         num = index.get(word, 0)
-        if 1 <= num <= num_words:
-            coded.append(num + 3)
-        elif num > num_words:
-            coded.append(2)
+        if num != 0:
+            num += 3
+        if num > num_words:
+            num = 2
+        coded.append(num)
 
     coded = vectorize(np.asarray([coded]), num_words)
     result = model.predict(coded)[0][0]
@@ -69,4 +70,5 @@ while True:
         print("Положительный:", result)
     else:
         print("Отрицательный:", result)
+
     print("")
