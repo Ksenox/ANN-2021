@@ -62,15 +62,15 @@ def get_model_c():
     return model
 
 
-train_size, test_size = len(X_train) // 3, len(X_test) // 3
-
+train_size = len(X_train) // 3
+test_size = len(X_test) // 3
 
 def get_ensemble_predictions(all_models, x_test, X):
     result = []
     for m in all_models:
+        result.append(np.round(m.predict(x_test, verbose=0)))
         if X:
             print(m.predict(x_test, verbose=0))
-        result.append(np.round(m.predict(x_test, verbose=0)))
     result = np.asarray(result)
     result = [np.round(np.mean(x)) for x in zip(*result)]
     return np.asarray(result).astype('int')
