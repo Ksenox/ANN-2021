@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def gen_rect(size=50):
     img = np.zeros([size, size])
     x = np.random.randint(0, size)

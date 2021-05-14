@@ -7,7 +7,7 @@ from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
-from var4 import gen_data
+from var1_pr6 import gen_data
 import random
 
 
