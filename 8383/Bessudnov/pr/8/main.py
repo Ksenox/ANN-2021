@@ -1,5 +1,7 @@
 import var3
 import numpy as np
+import matplotlib.pyplot as plt
+import pandas
 from keras.callbacks import Callback
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Convolution2D, MaxPooling2D, Dense, Dropout, Flatten
@@ -7,18 +9,30 @@ from tensorflow.python.keras import utils
 from sklearn.preprocessing import LabelEncoder
 from pathlib import Path
 
+
+target_names = ("Horizontal", "Vertical")
 fold_number = 0
 epochs_to_watch = []
 accuracy_log = []
 val_accuracy_log = []
 
-def saveHist(epoch):
-    print(fold_number, epoch)
+def saveHist(epoch, stats):
+    plt.clf()
+    data = dict(zip(target_names, stats))
+    df = pandas.DataFrame(data, index=[0])
+    titleString = "Histogram for " + str(epoch) + " epoch in " + str(fold_number) + " fold"
+    yticks = np.arange(0, 1, 0.1)
+    df.plot(kind="bar", title=titleString, ylim=[0, 1], yticks=yticks, ylabel="Binary Accuracy")
+    plt.savefig("hist_" + str(fold_number) + "_" + str(epoch) + ".png")
 
 
 class HistogramLogger(Callback):
     def on_epoch_end(self, epoch, logs=None):
-        print(self.params)
+        if epochs_to_watch.count(epoch) > 0:
+            stats = []
+            for name in target_names:
+                stats.append(logs[name + "_" + "binary_accuracy"])
+            saveHist(epoch, stats)
 
            
 
@@ -45,10 +59,11 @@ def build_model():
     flat = Flatten()(drop_2)
     hidden = Dense(hidden_size, activation='relu')(flat)
     drop_3 = Dropout(drop_dense)(hidden)
-    out = Dense(2, activation='sigmoid', name="final_output")(drop_3)
+
+    out = [Dense(2, name=name)(drop_3) for name in target_names]
 
     model = Model(inputs=inp, outputs=out) 
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['binary_accuracy'])
     return model
 
 
@@ -92,7 +107,6 @@ else:
         epochs_to_watch = f.read()
 
     epochs_to_watch = list(map(int, epochs_to_watch.split()))
-    print(epochs_to_watch)
 
 for i in range(K):
     print('processing fold #', i)
@@ -107,8 +121,4 @@ for i in range(K):
     history = model.fit(partial_train_data, partial_train_targets, epochs=epochs, batch_size=batch_size, 
         validation_split=0, verbose=0, callbacks=[HistogramLogger()])
 
-    val_bc, val_acc = model.evaluate(val_data, val_targets, verbose=0)
-    all_scores.append(val_acc)
     fold_number += 1
-
-print(np.mean(all_scores))
