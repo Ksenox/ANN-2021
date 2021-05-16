@@ -22,7 +22,10 @@ def get_data():
     (X_train, y_train), (X_test, y_test) = imdb.load_data(num_words=MAX_WORDS)
     data = np.concatenate((X_train, X_test), axis=0)
     targets = np.concatenate((y_train, y_test), axis=0)
-    return train_test_split(data, targets, test_size=0.1)
+    split = train_test_split(data, targets, test_size=0.1)
+    split[0] = sequence.pad_sequences(split[0], maxlen=MAX_REVIEW_LEN)
+    split[1] = sequence.pad_sequences(split[1], maxlen=MAX_REVIEW_LEN)
+    return split
 
 
 def fit_model(f: Callable) -> Callable:
@@ -91,13 +94,11 @@ def ensemble(models: List[Tuple[Sequential, float]], review: np.ndarray):
         pred = models[i][0].predict(review)[0][0]
         print(f"Model #{i + 1}: {pred}")
         final_pred += (pred * (i + 1) / sum(range(len(models) + 1)))
-    print(f"Final prediction: {final_pred}")
+    print(f"Final prediction: {'Positive' if final_pred > .5 else 'Negative'} ({final_pred})")
 
 
 if __name__ == '__main__':
     X_train, X_test, y_train, y_test = get_data()
-    X_train = sequence.pad_sequences(X_train, maxlen=MAX_REVIEW_LEN)
-    X_test = sequence.pad_sequences(X_test, maxlen=MAX_REVIEW_LEN)
     models = [
         fit_model(build_LSTM_model)(),
         fit_model(build_LSTM_CNN_model)(),
