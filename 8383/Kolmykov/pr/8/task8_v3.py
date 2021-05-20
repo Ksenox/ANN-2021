@@ -1,3 +1,5 @@
+from sklearn.preprocessing import LabelEncoder
+
 import task8_generator as generator
 import numpy as np
 import random
@@ -6,19 +8,16 @@ from keras.models import Model
 from keras.callbacks import Callback
 import matplotlib.pyplot as plt
 import pandas as pd
+from keras.utils import np_utils
 
 
-def draw_hist(accuracy, val_accuracy, number):
-    epochs = range(1, len(accuracy) + 1)
-    plt.clf()
-    data = {'accurately': accuracy,
-            'not accurately': [(1 - acc) for acc in accuracy]}
+def draw_hist(correctPredictions, wrongPredictions, epoch):
+    data = {'Correct': correctPredictions,
+            'Wrong': wrongPredictions}
+
     df = pd.DataFrame(data)
     df.plot(kind='bar', stacked=True)
-    plt.savefig("hist_" + str(number) + ".png")
-    plt.title("Нормализованная гистограмма точности")
-    plt.xlabel("Эпохи")
-    plt.ylabel("Доля")
+    plt.savefig("hist_" + str(epoch + 1) + ".png")
     plt.show()
 
 
@@ -47,10 +46,14 @@ def split_data(data, label):
 
 
 x, y = generator.gen_data()
-print(x.shape)
-y = np.asarray([[0.] if item == 'Empty' else [1.] for item in y])
+# print(x.shape)
+# y = np.asarray([[0.] if item == 'Empty' else [1.] for item in y])
 x, y = shuffle_data(x, y)
-(train_x, val_x, test_x), (train_y, val_y, test_y) = split_data(x, y)
+# (train_x, val_x, test_x), (train_y, val_y, test_y) = split_data(x, y)
+encoder = LabelEncoder()
+encoder.fit(y)
+y = encoder.transform(y)
+y = np_utils.to_categorical(y, 2)
 
 batch_size = 32
 num_epochs = 10
@@ -78,10 +81,10 @@ drop_2 = Dropout(drop_prob_1)(pool_2)
 flat = Flatten()(drop_2)
 hidden = Dense(hidden_size, activation='relu')(flat)
 drop_3 = Dropout(drop_prob_1)(hidden)
-out = Dense(1, activation='sigmoid')(drop_3)
+out = Dense(2, activation='softmax')(drop_3)
 
 model = Model(inputs=[inp], outputs=[out])
-model.compile(loss='binary_crossentropy',
+model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
@@ -90,21 +93,46 @@ print("Введите индексы эпох для вывода гистогр
 input_arr = input().split()
 for ind in input_arr:
     if int(ind) < num_epochs:
-        epochs_for_callback[int(ind)] = 1
+        epochs_for_callback[int(ind) - 1] = 1
 accuracy_list = []
 val_accuracy_list = []
 
 
 class HistogramCallBack(Callback):
     def on_epoch_end(self, epoch, logs=None):
-        accuracy_list.append(logs['accuracy'])
-        val_accuracy_list.append(logs['val_accuracy'])
-        if epochs_for_callback[epoch] == 1:
-            draw_hist(accuracy_list, val_accuracy_list, epoch)
+        # accuracy_list.append(logs['accuracy'])
+        # val_accuracy_list.append(logs['val_accuracy'])
+        # if epochs_for_callback[epoch] == 1:
+        #     draw_hist(accuracy_list, val_accuracy_list, epoch)
+
+        if epochs_for_callback[epoch] != 0:
+
+            correctPredictions = [0, 0]
+            wrongPredictions = [0, 0]
+            countsPredictions = [0, 0]
+            predictions = model.predict(x)
+
+            for i in range(len(predictions)):
+                if (np.argmax(predictions[i]) == np.argmax(y[i])):
+                    correctPredictions[np.argmax(y[i])] += 1
+                else:
+                    wrongPredictions[np.argmax(y[i])] += 1
+
+                countsPredictions[np.argmax(y[i])] += 1
+
+            correctPredictions = np.divide(correctPredictions, countsPredictions)
+            wrongPredictions = np.divide(wrongPredictions, countsPredictions)
+            draw_hist(correctPredictions, wrongPredictions, epoch)
 
 
-model.fit(train_x, train_y,
+model.fit(x, y,
           batch_size=batch_size, epochs=num_epochs,
-          verbose=1, validation_data=(val_x, val_y),
+          verbose=1, validation_split=0.1,
           callbacks=[HistogramCallBack()])
-model.evaluate(test_x, test_y, verbose=True)
+
+x_test, y_test = generator.gen_data(size=1000, img_size=50)
+encoder = LabelEncoder()
+encoder.fit(y_test)
+y_test = encoder.transform(y_test)
+y_test = np_utils.to_categorical(y_test, 2)
+model.evaluate(x_test, y_test, verbose=True)
