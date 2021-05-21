@@ -22,7 +22,9 @@ class CallbackVar1(Callback):  # создали подкласс Callback
     def on_epoch_end(self, epoch, logs=None):
         for i in range(self.elem):
             acc_epoch = logs[self.param]
-            if self.val_acc[i] < acc_epoch:
+            if self.rewriting > i:
+                continue
+            elif self.val_acc[i] < acc_epoch:
                 self.val_acc.insert(i, acc_epoch)
                 self.model.save(self.file_name + str(i + 1) + '.hdf5')
                 if self.rewriting != self.elem - 1:
@@ -30,9 +32,7 @@ class CallbackVar1(Callback):  # создали подкласс Callback
                 else:
                     self.rewriting = 0
                 break
-
-            elif self.rewriting > i:
-                continue
+       
 
     def on_train_end(self, logs=None):
         print("Тройка наилучших моделей:")
