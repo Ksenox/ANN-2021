@@ -25,7 +25,6 @@ print("Loading file...")
 data = read_text("vocab.txt")
 vocab = np.array(data)
 
-vocab = vocab[:60000, :]
 print("Dictionary size:", vocab.shape)
 
 print("Formatting text...")
