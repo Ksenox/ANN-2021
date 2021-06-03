@@ -49,7 +49,7 @@ def buildModel(X, Y):
 
     return model
 
-def generateTextLSTM(dataX, dataY, model, n_vocab, size=1000):
+def generateTextLSTM(dataX, dataY, model, n_vocab, size=2500):
     start = np.random.randint(0, len(dataX) - 1)
     pattern = dataX[start]
     print("Seed:")
@@ -131,12 +131,12 @@ if stage == "1":
 
     model.fit(
         X, Y,
-        epochs=20,
-        batch_size=128,
+        epochs=30,
+        batch_size=64,
         callbacks=callbacks_list)
 
 elif stage == "2":
-    model = load_model("weights-improvement-20-1.9469.hdf5")
+    model = load_model("weights-improvement-30-1.6691.hdf5")
     generateTextLSTM(dataX, dataY, model, n_vocab)
 
 
